@@ -68,8 +68,8 @@
 
 				// cube.rotation.x += 0.01;
 				// cube.rotation.y += 0.01;
-				cube.rotation.x += gx;
-				cube.rotation.y += gy;
+				cube.rotation.x += 0.001 + gx/10;
+				cube.rotation.y += 0.001 + gy/10;
 
 
 				renderer.render( scene, camera );
