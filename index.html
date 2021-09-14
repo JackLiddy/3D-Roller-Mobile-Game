@@ -29,11 +29,19 @@
             </div>
         </main>
 
+        <script>
+            var accelX = 0;
+            var accelY = 0;
+        </script>
+
 
 		<script src="js/three.js"></script>
 		<script>
+
             var gx = 0;
             var gy = 0;
+            //var gx = 0;
+            //var gy = 0;
 
 			const scene = new THREE.Scene();
 			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -54,8 +62,8 @@
 				requestAnimationFrame( animate );
 
 
-                gx = document.getElementById('Accelerometer_gx').value;
-                gy = document.getElementById('Accelerometer_gy').value;
+                //gx = document.getElementById('Accelerometer_gx').value;
+                //gy = document.getElementById('Accelerometer_gy').value;
 
                 if (gx == null) {
                     gx = 0;
@@ -64,12 +72,23 @@
                 if (gy == null) {
                     gy = 0;
                 }
-                console.log(gx);
+                //console.log(accelX);
 
 				// cube.rotation.x += 0.01;
 				// cube.rotation.y += 0.01;
-				cube.rotation.x += 0.001 + gx/10;
-				cube.rotation.y += 0.001 + gy/10;
+				//cube.rotation.x += 0.001 + gx/10;
+				//cube.rotation.y += 0.001 + gy/10;
+
+
+                if(accelX != null && accelY != null){
+                    cube.rotation.x += 0.001 + accelX/10;
+                    cube.rotation.y += 0.001 + accelY/10;
+
+                }
+                else{
+                    cube.rotation.x += 0.001;
+                    cube.rotation.y += 0.001;                    
+                }
 
 
 				renderer.render( scene, camera );
@@ -99,6 +118,13 @@
     }
     
     function handleMotion(event) {
+
+      accelX = event.accelerationIncludingGravity.x;
+      accelY = event.accelerationIncludingGravity.y;
+
+      //accelX = 5;
+      //accelY = 5;
+
       updateFieldIfNotNull('Accelerometer_gx', event.accelerationIncludingGravity.x);
       updateFieldIfNotNull('Accelerometer_gy', event.accelerationIncludingGravity.y);
       updateFieldIfNotNull('Accelerometer_gz', event.accelerationIncludingGravity.z);
