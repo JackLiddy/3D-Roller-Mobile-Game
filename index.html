@@ -32,6 +32,9 @@
 
 		<script src="js/three.js"></script>
 		<script>
+            var gx = 0;
+            var gy = 0;
+
 			const scene = new THREE.Scene();
 			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
@@ -50,8 +53,24 @@
 			const animate = function () {
 				requestAnimationFrame( animate );
 
-				cube.rotation.x += 0.01;
-				cube.rotation.y += 0.01;
+
+                gx = document.getElementById('Accelerometer_gx').value;
+                gy = document.getElementById('Accelerometer_gy').value;
+
+                if (gx == null) {
+                    gx = 0;
+                }
+
+                if (gy == null) {
+                    gy = 0;
+                }
+                console.log(gx);
+
+				// cube.rotation.x += 0.01;
+				// cube.rotation.y += 0.01;
+				cube.rotation.x += gx;
+				cube.rotation.y += gy;
+
 
 				renderer.render( scene, camera );
 			};
