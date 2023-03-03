@@ -1,0 +1,39 @@
+TODO
+
+determine if mobile or not  
+    button at start
+        (mobile) - use the devices gyroscope
+        (desktop) - use the keyboard
+
+request gyroscope access
+    - confirm IOS and android
+    - if error
+        access denied - access was denied to gyrpscope: reload page, clear cookies, ect
+        gyroscope not supported - error message
+        check if your device supports gyroscope
+      
+keyboard controls
+    get keyboard input
+    adjust orientation on input
+
+gyroscope controls
+    sync gyroscop to orientation change
+
+
+implement realistic rolling
+    sync position change with  object rotation
+
+gameplay mechanic ideas
+    - roll into pits, falling into next level
+    - avoid obstacles generated
+    - constantly roll downhill, avoiding obstacles
+
+research gravity implementation
+    - manually lower position
+    - implement gravity engine with three.js
+
+graphics improvements
+    - render background
+    - add lighting
+    - add textures
+
