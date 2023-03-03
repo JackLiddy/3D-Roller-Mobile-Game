@@ -4,13 +4,8 @@
 import * as THREE from "https://cdn.skypack.dev/three";
 // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+// Init scene and renderer
 const canvas = document.querySelector("canvas.webgl");
-
-var gx = 0;
-var gy = 0;
-//var gx = 0;
-//var gy = 0;
-
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -18,7 +13,6 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -36,6 +30,8 @@ const animate = function () {
 
   //gx = document.getElementById('Accelerometer_gx').value;
   //gy = document.getElementById('Accelerometer_gy').value;
+  var gx = 0;
+  var gy = 0;
 
   if (gx == null) {
     gx = 0;
@@ -84,6 +80,7 @@ function incrementEventCount() {
 function updateFieldIfNotNull(fieldName, value, precision = 10) {
   if (value != null)
     document.getElementById(fieldName).innerHTML = value.toFixed(precision);
+    //innerHTML error
 }
 
 function handleMotion(event) {
@@ -110,17 +107,27 @@ function handleMotion(event) {
   updateFieldIfNotNull("Accelerometer_y", event.acceleration.y);
   updateFieldIfNotNull("Accelerometer_z", event.acceleration.z);
 
-  updateFieldIfNotNull("Accelerometer_i", event.interval, 2);
-
-  updateFieldIfNotNull("Gyroscope_z", event.rotationRate.alpha);
-  updateFieldIfNotNull("Gyroscope_x", event.rotationRate.beta);
-  updateFieldIfNotNull("Gyroscope_y", event.rotationRate.gamma);
+//   updateFieldIfNotNull("Accelerometer_i", event.interval, 2);
+//   updateFieldIfNotNull("Gyroscope_z", event.rotationRate.alpha);
+//   updateFieldIfNotNull("Gyroscope_x", event.rotationRate.beta);
+//   updateFieldIfNotNull("Gyroscope_y", event.rotationRate.gamma);
   incrementEventCount();
 }
 
 let is_running = false;
 let demo_button = document.getElementById("start_demo");
 demo_button.onclick = function (e) {
+
+
+  console.log('isIOSDevice: ', isIOSDevice());
+
+  let browser = navigator.userAgent.toLowerCase();
+  console.log('browser: ',  );
+  console.log('isChrome: ', isChrome(browser));
+  document.getElementById("Browser").innerHTML = browser;
+
+
+
   e.preventDefault();
 
   // Request permission for iOS 13+ devices
@@ -147,3 +154,43 @@ demo_button.onclick = function (e) {
     is_running = true;
   }
 };
+
+//javascript function to detect if the browser is running on a mobile device
+function isMobileDevice() {
+  return (
+    typeof window.orientation !== "undefined" ||
+    navigator.userAgent.indexOf("IEMobile") !== -1
+  );
+}
+//javascript function to detect if the browser is running on an iOS device
+function isIOSDevice() {
+  return (
+    navigator.userAgent.match(/iPad/i) ||
+    navigator.userAgent.match(/iPhone/i) ||
+    navigator.userAgent.match(/iPod/i)
+  );
+}
+
+
+
+//function to read the value of the orientation sensor on an iOS device
+function readOrientation() {
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener("deviceorientation", handleOrientation, true);
+  }
+}
+
+//function to detect if the browser is chrome
+function isChrome(browser) {
+  return browser.indexOf("chrome") > -1;
+}
+
+//function to detect what browser is running
+// function detectBrowser() {
+//   let browser = navigator.userAgent.toLowerCase();
+//   if (isChrome(browser)) {
+//     console.log("Browser is Chrome");
+//   } else {
+//     console.log("Browser is not Chrome");
+//   }
+// }
