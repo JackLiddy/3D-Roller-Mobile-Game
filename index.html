@@ -8,12 +8,29 @@
 	</head>
 	<body>
         <canvas class="webgl"></canvas>
-        <div>
+        <main role="main" class="container">
+                                    
+            <div class="p-3 mb-2 bg-secondary" id="demo-div">
+            <a id="start_demo" class="btn btn-lg btn-success py-1" href="#" role="button">Start the demo</a>
+            <p style="margin-top:1rem;">Num. of datapoints: <span class="badge badge-warning" id="num-observed-events">0</span></p>
+
+        <p>hello</p>
+
+        <ul>
+            <li>X-axis: <span id="Accelerometer_gx">0</span><span> m/s<sup>2</sup></span></li>
+            <li>Y-axis: <span id="Accelerometer_gy">0</span><span> m/s<sup>2</sup></span></li>
+            <li>Z-axis: <span id="Accelerometer_gz">0</span><span> m/s<sup>2</sup></span></li>
+        </ul>
+            </div>
+        </main>
+        <!-- <div>
             <h1>Hello world</h1>
             <h2>Text</h2>
             <h3>Text</h3>
-        </div>
+        </div> -->
          <!-- CDN Link to Three.js -->
         <script type="module" src="index.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	</body>
 </html>
