@@ -17,7 +17,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-//Init initial geometri
+// Init initial geometry
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geometry, material);
@@ -60,15 +60,39 @@ const animate = function () {
     //   let accelX = 5;
     //   let accelY = 5;
 
-    //update rotation
-
-    if (accelX != null && accelY != null) {
-        cube.rotation.x += 0.0001 + accelX / 100;
-        cube.rotation.y += 0.0001 + accelY / 100;
-    } else {
-        cube.rotation.x += 0.0001;
-        cube.rotation.y += 0.0001;
+    //update rotation 
+    if (is_running) {
+        if (isMobile) {
+            if (accelX != null && accelY != null) {
+                // console.log(rotating );
+                cube.rotation.x += 0.0001 + accelX / 100;
+                cube.rotation.y += 0.0001 + accelY / 100;
+            } else {
+                // cube.rotation.x += 0.0001;
+                // cube.rotation.y += 0.0001;
+            }   
+        }
+        else if (isMobile === false) {
+            console.log('adjusting rotation via keyboard');
+            cube.rotation.x += accelX / 100;
+            cube.rotation.y += accelY / 100;
+        }
     }
+    else {
+        //default rotation
+        // cube.rotation.x += 0.005;
+        // cube.rotation.y += 0.005;
+    }
+
+
+
+    // if (accelX != null && accelY != null) {
+    //     cube.rotation.x += 0.0001 + accelX / 100;
+    //     cube.rotation.y += 0.0001 + accelY / 100;
+    // } else {
+    //     cube.rotation.x += 0.0001;
+    //     cube.rotation.y += 0.0001;
+    // }
 
     renderer.render(scene, camera);
 };
@@ -88,22 +112,22 @@ function updateFieldIfNotNull(fieldName, value, precision = 10) {
 }
 
 // handle device orientation change
-function handleOrientation(event) {
-    updateFieldIfNotNull("Orientation_a", event.alpha);
-    updateFieldIfNotNull("Orientation_b", event.beta);
-    updateFieldIfNotNull("Orientation_g", event.gamma);
-    incrementEventCount();
-}
+// function handleOrientation(event) {
+//     updateFieldIfNotNull("Orientation_a", event.alpha);
+//     updateFieldIfNotNull("Orientation_b", event.beta);
+//     updateFieldIfNotNull("Orientation_g", event.gamma);
+//     incrementEventCount();
+// }
 
-// handle device motion change
+// Handle device motion change
 function handleMotion(event) {
     //   accelX = event.accelerationIncludingGravity.x;
     //   accelY = event.accelerationIncludingGravity.y;
 
-    console.log("motion event handled");
+      accelX = event.accelerationIncludingGravity.x;
+      accelY = event.accelerationIncludingGravity.y;
 
-    let accelX = 5;
-    let accelY = 5;
+    console.log("motion event handled");
 
     updateFieldIfNotNull(
         "Accelerometer_gx",
@@ -131,8 +155,28 @@ function handleMotion(event) {
 
 let usingKeyboardButton = document.getElementById("using_keyboard");
 usingKeyboardButton.onclick = function (e) {
+    e.preventDefault();
     console.log("KEYBOARD BUTTON CLICKED");
+    window.addEventListener("keypress", handleKeyDown);
     isMobile = false;
+
+    // Toggle running state and mobile button
+    if (is_running) {
+        window.removeEventListener("devicemotion", handleMotion);
+        // window.removeEventListener("deviceorientation", handleOrientation);
+        usingKeyboardButton.innerHTML = "Use Keyboard";
+        usingKeyboardButton.classList.add("btn-success");
+        usingKeyboardButton.classList.remove("btn-danger");
+        is_running = false;
+    } else {
+        window.addEventListener("devicemotion", handleMotion);
+        // window.addEventListener("deviceorientation", handleOrientation);
+        document.getElementById("using_mobile").innerHTML = "Stop Playing";
+        usingKeyboardButton.classList.remove("btn-success");
+        usingKeyboardButton.classList.add("btn-danger");
+        is_running = true;
+    }
+
 };
 
 let usingMobileButton = document.getElementById("using_mobile");
@@ -160,15 +204,16 @@ usingMobileButton.onclick = function (e) {
     // Toggle running state and mobile button
     if (is_running) {
         window.removeEventListener("devicemotion", handleMotion);
-        window.removeEventListener("deviceorientation", handleOrientation);
-        usingMobileButton.innerHTML = "Start demo";
+        // window.removeEventListener("deviceorientation", handleOrientation);
+        usingMobileButton.innerHTML = "Mobile Device";
         usingMobileButton.classList.add("btn-success");
         usingMobileButton.classList.remove("btn-danger");
         is_running = false;
+        isMobile = false;
     } else {
         window.addEventListener("devicemotion", handleMotion);
-        window.addEventListener("deviceorientation", handleOrientation);
-        document.getElementById("using_mobile").innerHTML = "Stop demo";
+        // window.addEventListener("deviceorientation", handleOrientation);
+        document.getElementById("using_mobile").innerHTML = "Stop Playing";
         usingMobileButton.classList.remove("btn-success");
         usingMobileButton.classList.add("btn-danger");
         is_running = true;
@@ -212,3 +257,55 @@ function isIOSDevice() {
 //     console.log("Browser is not Chrome");
 //   }
 // }
+
+//funtion to detect keypress of w a s d keys
+function handleKeyDown(event) {
+    // console.log("key pressed: ", event.keyCode);
+    switch (event.keyCode) {
+        case 119:
+            // w - up
+            console.log("up");
+            accelX += 1;
+            // cube.rotation.x += 0.05;
+            // accelX = 
+            // console.log('left');
+            break;
+        case 115:
+            // s - down
+            accelX -= 1;
+            // cube.rotation.y += 0.05;
+            // console.log('up');
+            break;
+        case 97:
+            // a - left
+            accelY += 1;
+            // cube.rotation.x -= 0.05;
+            break;
+        case 100:
+            // d - right
+            accelY -= 1;
+            // cube.rotation.y -= 0.05;
+            break;
+    }
+
+    // switch (event.keyCode) {
+    //     case 37:
+    //         // left
+    //         cube.rotation.x += 0.05;
+    //         console.log('left');
+    //         break;
+    //     case 38:
+    //         // up
+    //         cube.rotation.y += 0.05;
+    //         console.log('up');
+    //         break;
+    //     case 39:
+    //         // right
+    //         cube.rotation.x -= 0.05;
+    //         break;
+    //     case 40:
+    //         // down
+    //         cube.rotation.y -= 0.05;
+    //         break;
+    // }
+}

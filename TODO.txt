@@ -37,3 +37,26 @@ graphics improvements
     - add lighting
     - add textures
 
+
+
+
+gyroscope
+X-axis
+Y-axis
+Z-axis
+
+
+flat on table
+    X 0
+    Y 0
+    Z -9
+
+rotate left
+    X 0 to -9
+rotate right
+    X 0 to 9
+
+rotate forward
+    Y 0 to 9
+rotate backwards
+    Y 0 to -9
