@@ -2,29 +2,42 @@
 // import * as THREE from "https://unpkg.com/three@0.127.0/build/three.module.js";
 
 import * as THREE from "https://cdn.skypack.dev/three";
+// import { OrbitControls } from "https://unpkg.com/three@0.127.0/examples/jsm/controls/OrbitControls.js";
+
 // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // Init global variables for scene
 const canvas = document.querySelector("canvas.webgl");
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+// const scene = new THREE.Scene();
+// scene.background = new THREE.Color( 0xfce4ec );
+
+// const camera = new THREE.PerspectiveCamera(
+//     75,
+//     window.innerWidth / window.innerHeight,
+//     0.1,
+//     1000
+// );
+// const renderer = new THREE.WebGLRenderer();
+// renderer.setSize(window.innerWidth, window.innerHeight);
+// document.body.appendChild(renderer.domElement);
 
 // Init initial geometry
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+// const geometry = new THREE.BoxGeometry();
+// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+// const cube = new THREE.Mesh(geometry, material);
+// scene.add(cube);
 
 //camera.position.z = 5;
-camera.position.z = 3;
+// camera.position.z = 3;
+
+
+// const renderer = new THREE.WebGLRenderer();
+
+let camera, scene, renderer;
+let baseBrush, brush;
+let core;
+let result, evaluator, wireframe;
+let ballMesh;
 
 let rotationChangeX = 0;
 let rotationChangeY = 0;
@@ -34,6 +47,115 @@ let accelY = 0;
 
 let isMobile = null;
 let is_running = false;
+
+
+function init() {
+    // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
+    // camera.position.set( - 1, 1, 1 ).normalize().multiplyScalar( 10 );
+
+    // environment
+    // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
+    camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+    // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
+    // camera.position.set( - 1, 1, 1 ).normalize().multiplyScalar( 10 );
+
+    camera.position.z = 4;
+    // camera.position.set( - 1, 1, 1 ).normalize().multiplyScalar( 10 );
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0xfce4ec );
+
+    // lights
+    const ambient = new THREE.HemisphereLight( 0xffffff, 0xbfd4d2, 0.9 );
+    scene.add( ambient );
+
+    const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.1 );
+    directionalLight.position.set( 1, 4, 3 ).multiplyScalar( 3 );
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.setScalar( 2048 );
+    directionalLight.shadow.bias = - 1e-4;
+    directionalLight.shadow.normalBias = 1e-4;
+    scene.add( directionalLight );
+
+    // renderer = new THREE.WebGLRenderer();
+    // renderer.setSize(window.innerWidth, window.innerHeight);
+    // document.body.appendChild(renderer.domElement);
+
+    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild( renderer.domElement );
+
+    // add shadow plane
+    const plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(),
+        new THREE.ShadowMaterial( {
+            color: 0xd81b60,
+            transparent: true,
+            opacity: 0.075,
+            side: THREE.DoubleSide,
+        } ),
+    );
+    plane.position.y = - 3;
+    plane.rotation.x = - Math.PI / 2;
+    plane.scale.setScalar( 10 );
+    plane.receiveShadow = true;
+    scene.add( plane );
+
+
+    let ballGeometry = new THREE.IcosahedronGeometry( 2, 3 )
+    let ballMaterial = new THREE.MeshStandardMaterial( {
+        flatShading: true,
+        // color: 0xff9800,
+        // emissive: 0xff9800,
+        emissiveIntensity: 0.15,
+        polygonOffset: true,
+        polygonOffsetUnits: 1,
+        polygonOffsetFactor: 1,
+    } );
+    ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);   
+    ballMesh.castShadow = true; 
+    scene.add(ballMesh);
+
+//     const geometry = new THREE.BoxGeometry();
+// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+// const cube = new THREE.Mesh(geometry, material);
+// scene.add(cube);
+
+    // create wireframe
+    // wireframe = new THREE.Mesh(
+    //     undefined,
+    //     new THREE.MeshBasicMaterial( { color: 0x009688, wireframe: true } ),
+    // );
+    // scene.add( wireframe );
+    				// create wireframe
+    // wireframe = new THREE.Mesh(
+    //     undefined,
+    //     new THREE.MeshBasicMaterial( { color: 0x009688, wireframe: true } ),
+    // );
+    // scene.add( wireframe );
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+    // controls
+//     const controls = new OrbitControls( camera, renderer.domElement );
+//     controls.minDistance = 5;
+//     controls.maxDistance = 75;
+// }
+}
+
+
+init();
 
 const animate = function () {
     requestAnimationFrame(animate);
@@ -48,8 +170,8 @@ const animate = function () {
         if (isMobile) {
             if (accelX != null && accelY != null) {
                 // console.log(rotating );
-                cube.rotation.x += ( accelX / 100);
-                cube.rotation.y += ( accelY / 100);
+                ballMesh.rotation.x += ( accelX / 100);
+                ballMesh.rotation.y += ( accelY / 100);
             } else {
                 // cube.rotation.x += 0.0001;
                 // cube.rotation.y += 0.0001;
@@ -57,8 +179,8 @@ const animate = function () {
         }
         else if (isMobile === false) {
             console.log('adjusting rotation via keyboard');
-            cube.rotation.x += accelX / 100;
-            cube.rotation.y += accelY / 100;
+            ballMesh.rotation.x += accelX / 100;
+            ballMesh.rotation.y += accelY / 100;
         }
     }
     else {
@@ -66,6 +188,16 @@ const animate = function () {
         // cube.rotation.x += 0.005;
         // cube.rotation.y += 0.005;
     }
+
+    // camera.position.z += 0.05;
+    // camera.position.y += 0.01;
+
+
+    //rotate camera around postition of the ball
+    // camera.position.x = ballMesh.position.x + 10 * Math.sin( Date.now() / 1000 );
+    // camera.position.z = ballMesh.position.z + 10 * Math.cos( Date.now() / 1000 );
+    camera.lookAt( ballMesh.position );
+    
 
     renderer.render(scene, camera);
 };
@@ -134,6 +266,8 @@ usingKeyboardButton.onclick = function (e) {
     console.log("KEYBOARD BUTTON CLICKED");
     window.addEventListener("keypress", handleKeyDown);
     isMobile = false;
+    
+
 
     // Toggle running state and mobile button
     if (is_running) {
@@ -149,6 +283,9 @@ usingKeyboardButton.onclick = function (e) {
         document.getElementById("using_mobile").innerHTML = "Stop Playing";
         usingKeyboardButton.classList.remove("btn-success");
         usingKeyboardButton.classList.add("btn-danger");
+
+        //hide popover
+        document.getElementById("popover").style.display = "none"
         is_running = true;
     }
 
