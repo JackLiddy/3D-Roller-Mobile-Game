@@ -48,8 +48,8 @@ const animate = function () {
         if (isMobile) {
             if (accelX != null && accelY != null) {
                 // console.log(rotating );
-                cube.rotation.x += 0.0001 + accelX / 100;
-                cube.rotation.y += 0.0001 + accelY / 100;
+                cube.rotation.x += ( accelX / 100);
+                cube.rotation.y += ( accelY / 100);
             } else {
                 // cube.rotation.x += 0.0001;
                 // cube.rotation.y += 0.0001;
@@ -97,8 +97,10 @@ function handleMotion(event) {
     //   accelX = event.accelerationIncludingGravity.x;
     //   accelY = event.accelerationIncludingGravity.y;
 
-      accelY = event.accelerationIncludingGravity.x;
-      accelX = event.accelerationIncludingGravity.y;
+    // accelY = event.accelerationIncludingGravity.x;
+    // accelX = event.accelerationIncludingGravity.y;
+    accelY = event.accelerationIncludingGravity.x;
+    accelX = event.accelerationIncludingGravity.y;
 
     console.log("motion event handled");
 
@@ -115,9 +117,9 @@ function handleMotion(event) {
         event.accelerationIncludingGravity.z
     );
 
-    updateFieldIfNotNull("Accelerometer_x", event.acceleration.x);
-    updateFieldIfNotNull("Accelerometer_y", event.acceleration.y);
-    updateFieldIfNotNull("Accelerometer_z", event.acceleration.z);
+    // updateFieldIfNotNull("Accelerometer_x", event.acceleration.x);
+    // updateFieldIfNotNull("Accelerometer_y", event.acceleration.y);
+    // updateFieldIfNotNull("Accelerometer_z", event.acceleration.z);
 
     //   updateFieldIfNotNull("Accelerometer_i", event.interval, 2);
     //   updateFieldIfNotNull("Gyroscope_z", event.rotationRate.alpha);
