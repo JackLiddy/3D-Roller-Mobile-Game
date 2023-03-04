@@ -38,27 +38,10 @@ let is_running = false;
 const animate = function () {
     requestAnimationFrame(animate);
 
-    //gx = document.getElementById('Accelerometer_gx').value;
-    //gy = document.getElementById('Accelerometer_gy').value;
-    //   var gx = 0;
-    //   var gy = 0;
-
-    //   if (gx == null) {
-    //     gx = 0;
-    //   }
-
-    //   if (gy == null) {
-    //     gy = 0;
-    //   }
-    //console.log(accelX);
-
     // cube.rotation.x += 0.01;
     // cube.rotation.y += 0.01;
     //cube.rotation.x += 0.001 + gx/10;
     //cube.rotation.y += 0.001 + gy/10;
-
-    //   let accelX = 5;
-    //   let accelY = 5;
 
     //update rotation 
     if (is_running) {
@@ -83,16 +66,6 @@ const animate = function () {
         // cube.rotation.x += 0.005;
         // cube.rotation.y += 0.005;
     }
-
-
-
-    // if (accelX != null && accelY != null) {
-    //     cube.rotation.x += 0.0001 + accelX / 100;
-    //     cube.rotation.y += 0.0001 + accelY / 100;
-    // } else {
-    //     cube.rotation.x += 0.0001;
-    //     cube.rotation.y += 0.0001;
-    // }
 
     renderer.render(scene, camera);
 };
@@ -124,8 +97,8 @@ function handleMotion(event) {
     //   accelX = event.accelerationIncludingGravity.x;
     //   accelY = event.accelerationIncludingGravity.y;
 
-      accelX = event.accelerationIncludingGravity.x;
-      accelY = event.accelerationIncludingGravity.y;
+      accelY = event.accelerationIncludingGravity.x;
+      accelX = event.accelerationIncludingGravity.y;
 
     console.log("motion event handled");
 
