@@ -293,9 +293,9 @@ const animate = function () {
                 // console.log(rotating );
                 // ballMesh.rotation.x += accelX / 100;
                 // ballMesh.rotation.y += accelY / 100;
-                velocityX = accelY;
+                velocityX = accelX;
                 // velocityY = accelY;
-                velocityZ = accelX;
+                velocityZ = -accelY;
 
                 // add velocity to ball
                 ballMesh.position.x += velocityX;
@@ -490,8 +490,8 @@ function updateFieldIfNotNull(fieldName, value, precision = 10) {
 
 // Handle device motion change
 function handleMotion(event) {
-    accelY = event.accelerationIncludingGravity.x;
-    accelX = event.accelerationIncludingGravity.y;
+    accelX = event.accelerationIncludingGravity.x;
+    accelY = event.accelerationIncludingGravity.y;
 
     console.log("motion event handled");
 
