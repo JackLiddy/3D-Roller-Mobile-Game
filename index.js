@@ -588,6 +588,8 @@ usingMobileButton.onclick = function (e) {
         document.getElementById("using_mobile").innerHTML = "Stop Playing";
         usingMobileButton.classList.remove("btn-success");
         usingMobileButton.classList.add("btn-danger");
+        //hide popover
+        document.getElementById("popover").style.display = "none";
         is_running = true;
     }
 };
