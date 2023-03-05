@@ -19,6 +19,17 @@ div{
     flex-direction: column;
     text-align: center;
 }
+.div2{
+    position: absolute;
+    top: 30%;
+    left: 25%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
 
 h1{
     color: white;

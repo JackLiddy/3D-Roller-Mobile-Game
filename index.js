@@ -187,7 +187,6 @@ const animate = function () {
                 }
                 moveObstacles();
                 updateScore();
-                accelX = 0.5
 
                 let mobileVelocityX = 0;
                 let mobileVelocityY = 0;
