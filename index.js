@@ -294,11 +294,20 @@ const animate = function () {
                 // ballMesh.rotation.x += accelX / 100;
                 // ballMesh.rotation.y += accelY / 100;
 
-                let mobileVelocityX = accelX;
+                let mobileVelocityX = 0;
+                let mobileVelocityY = 0;
 
-                velocityX = accelX / 10;
-                // velocityY = accelY;
-                velocityZ = -accelY / 10;
+                // diable motion if too low
+                if (accelX > 0.1) {
+                    mobileVelocityX = accelX / 100;
+                }
+                // now the same for accelY and mobileVelocityY
+                if (accelY > 0.1) {
+                    mobileVelocityY = -accelY / 100;
+                }
+
+                velocityX = mobileVelocityX;
+                velocityZ = mobileVelocityY
 
                 // add velocity to ball
                 ballMesh.position.x += velocityX;
