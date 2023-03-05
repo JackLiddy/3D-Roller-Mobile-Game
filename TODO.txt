@@ -60,3 +60,15 @@ rotate forward
     Y 0 to 9
 rotate backwards
     Y 0 to -9
+
+
+
+Completed
+    new movement paragi
+
+
+To Do
+    Configure mobile orientation controls
+    Fix shadow plane, expand region
+    Use code that slices in plane or add new plane
+    Add obstacles

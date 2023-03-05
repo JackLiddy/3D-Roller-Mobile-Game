@@ -289,9 +289,39 @@ const animate = function () {
     if (is_running) {
         if (isMobile) {
             if (accelX != null && accelY != null) {
+
                 // console.log(rotating );
-                ballMesh.rotation.x += accelX / 100;
-                ballMesh.rotation.y += accelY / 100;
+                // ballMesh.rotation.x += accelX / 100;
+                // ballMesh.rotation.y += accelY / 100;
+                velocityX = accelX;
+                velocityY = accelY;
+
+                // add velocity to ball
+                ballMesh.position.x += velocityX;
+                ballMesh.position.z += velocityZ;
+                ballMesh.position.y += velocityY;
+                // Figure out the rotation based on the velocity and radius of the ballMesh...
+                ballVelocity.set(velocityX, velocityY, velocityZ);
+                ballRotationAxis.set(0, 1, 0).cross(ballVelocity).normalize(); //!!!!!!
+                var velocityMag = ballVelocity.length();
+                var rotationAmount =
+                    (velocityMag * (Math.PI * 2)) / ballCircumference;
+                ballMesh.rotateOnWorldAxis(ballRotationAxis, rotationAmount);
+
+                // apply friction
+                if (velocityX > 0) {
+                    velocityX -= friction;
+                }
+                else {
+                    velocityX += friction;
+                }
+                if (velocityZ > 0) {   
+                    velocityZ -= friction;
+                }
+                else {
+                    velocityZ += friction;
+                }
+
             } else {
                 // cube.rotation.x += 0.0001;
                 // cube.rotation.y += 0.0001;
