@@ -47,7 +47,6 @@ let accelY = 0;
 let isMobile = null;
 let is_running = false;
 
-let accelerationRate = 0.1;
 
 // var degrees = 35;
 // var power = 0.45;
@@ -100,7 +99,10 @@ console.log('velocityZ: ' + velocityZ);
 // var velocityY = 0;
 // var velocityZ = 0.5;
 
-var friction = 0.001
+let accelerationRate = 0.2;
+
+
+var friction = 0.005;
 var gravity = 0.2;
 var bounciness = 0.9;
 
@@ -155,6 +157,15 @@ function init() {
     directionalLight.shadow.normalBias = 1e-4;
     scene.add(directionalLight);
 
+    
+    // const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.1);
+    // directionalLight2.position.set(3, 10, 3).multiplyScalar(3);
+    // directionalLight2.castShadow = true;
+    // directionalLight2.shadow.mapSize.setScalar(2048);
+    // directionalLight2.shadow.bias = -1e-4;
+    // directionalLight2.shadow.normalBias = 1e-4;
+    // scene.add(directionalLight2);
+
     // renderer = new THREE.WebGLRenderer();
     // renderer.setSize(window.innerWidth, window.innerHeight);
     // document.body.appendChild(renderer.domElement);
@@ -167,20 +178,46 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     // add shadow plane
-    const plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(),
-        new THREE.ShadowMaterial({
-            color: 0xd81b60,
-            transparent: true,
-            opacity: 0.075,
-            side: THREE.DoubleSide,
-        })
-    );
-    plane.position.y = -3;
+    // const plane = new THREE.Mesh(
+    //     new THREE.PlaneGeometry(),
+    //     new THREE.ShadowMaterial({
+    //         color: 0xd81b60,
+    //         transparent: true,
+    //         opacity: 0.075,
+    //         side: THREE.DoubleSide,
+    //     })
+    // );
+
+        // add shadow plane
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(55, 55),
+            new THREE.ShadowMaterial({
+                color: 0xd81b60,
+                transparent: true,
+                opacity: 0.075,
+                side: THREE.DoubleSide,
+            })
+        );
+    plane.position.y = -2;
     plane.rotation.x = -Math.PI / 2;
     plane.scale.setScalar(10);
     plane.receiveShadow = true;
     scene.add(plane);
+
+    const plane2 = new THREE.Mesh(
+        new THREE.PlaneGeometry(),
+        new THREE.ShadowMaterial({
+            color: 0xd81b60,
+            transparent: false,
+            opacity: 0.0075,
+            side: THREE.DoubleSide,
+        })
+    );
+    plane2.position.y = -3.5;
+    plane2.rotation.x = -Math.PI / 2;
+    plane2.scale.setScalar(10);
+    plane.receiveShadow = true;
+    // scene.add(plane2);
 
     let ballGeometry = new THREE.IcosahedronGeometry(2, 3);
     let ballMaterial = new THREE.MeshStandardMaterial({
