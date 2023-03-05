@@ -299,15 +299,16 @@ const animate = function () {
 
                 // diable motion if too low
                 if (Math.abs(accelX) > 0.1) {
-                    mobileVelocityX = accelX / 25;
+                    mobileVelocityX = accelX / 30;
                 }
                 // now the same for accelY and mobileVelocityY
                 if (Math.abs(accelY) > 0.1) {
-                    mobileVelocityY = -accelY / 25;
+                    mobileVelocityY = -accelY / 30;
                 }
 
                 velocityX = mobileVelocityX;
                 velocityZ = mobileVelocityY;
+                //test += mobileVelocityX/50;
 
                 // add velocity to ball
                 ballMesh.position.x += velocityX;
