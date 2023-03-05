@@ -102,7 +102,7 @@ console.log('velocityZ: ' + velocityZ);
 let accelerationRate = 0.2;
 
 
-var friction = 0.005;
+var friction = 0.001;
 var gravity = 0.2;
 var bounciness = 0.9;
 
@@ -293,9 +293,12 @@ const animate = function () {
                 // console.log(rotating );
                 // ballMesh.rotation.x += accelX / 100;
                 // ballMesh.rotation.y += accelY / 100;
-                velocityX = accelX;
+
+                let mobileVelocityX = accelX;
+
+                velocityX = accelX / 10;
                 // velocityY = accelY;
-                velocityZ = -accelY;
+                velocityZ = -accelY / 10;
 
                 // add velocity to ball
                 ballMesh.position.x += velocityX;
