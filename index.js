@@ -8,35 +8,13 @@ import * as THREE from "https://cdn.skypack.dev/three";
 
 // Init global variables for scene
 const canvas = document.querySelector("canvas.webgl");
-// const scene = new THREE.Scene();
-// scene.background = new THREE.Color( 0xfce4ec );
-
-// const camera = new THREE.PerspectiveCamera(
-//     75,
-//     window.innerWidth / window.innerHeight,
-//     0.1,
-//     1000
-// );
-// const renderer = new THREE.WebGLRenderer();
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// document.body.appendChild(renderer.domElement);
-
-// Init initial geometry
-// const geometry = new THREE.BoxGeometry();
-// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-// const cube = new THREE.Mesh(geometry, material);
-// scene.add(cube);
-
-//camera.position.z = 5;
-// camera.position.z = 3;
-
-// const renderer = new THREE.WebGLRenderer();
 
 let camera, scene, renderer;
 let baseBrush, brush;
 let core;
 let result, evaluator, wireframe;
 let ballMesh;
+let obstacles = [];
 
 let rotationChangeX = 0;
 let rotationChangeY = 0;
@@ -47,57 +25,20 @@ let accelY = 0;
 let isMobile = null;
 let is_running = false;
 
-
-// var degrees = 35;
-// var power = 0.45;
-
 // motion vector accounting for power and direction
-var degrees = 0;
-var power = 0.00;
+let degrees = 0;
+let power = 0.00;
 
-// var degrees = 35;
-// var power = 0.01;
+let angleRad = (degrees * Math.PI) / 180;
 
-var angleRad = (degrees * Math.PI) / 180;
-
-// var velocityX = Math.cos(angleRad) * power;
-// var velocityY = Math.sin(angleRad) * power;
-// var velocityZ = 0; //test 0
-
-var velocityX = Math.cos(angleRad) * power;
-var velocityZ = Math.sin(angleRad) * power;
-var velocityY = 0; //test 0
-
+let velocityX = Math.cos(angleRad) * power;
+let velocityZ = Math.sin(angleRad) * power;
+let velocityY = 0; //test 0
 
 console.log('angleRad: ' + angleRad);
-
 console.log('velocityX: ' + velocityX);
 console.log('velocityY: ' + velocityY);
 console.log('velocityZ: ' + velocityZ);
-
-
-
-
-// function to determine
-
-
-
-
-
-
-
-
-
-
-
-// velocityX = -0.1;
-// velocityY = 0.0;
-// velocityZ = 0.0; //test 0
-
-
-// var velocityX  = 0;
-// var velocityY = 0;
-// var velocityZ = 0.5;
 
 let accelerationRate = 0.2;
 
@@ -111,22 +52,10 @@ var ballCircumference = Math.PI * ballRadius * 2;
 var ballVelocity = new THREE.Vector3();
 var ballRotationAxis = new THREE.Vector3(0, 1, 0);
 
-//new approach
-// var rotation_matrix = null;
+let score = 0;
 
-// var setQuaternions = function () {
-//     setMatrix();
-//     ballMesh.rotation.set(Math.PI / 2, Math.PI / 4, Math.PI / 4); // Set initial rotation
-//     ballMesh.matrix.makeRotationFromEuler(ballMesh.rotation); // Apply rotation to the object's matrix
-// };
-// var setMatrix = function () {
-//     rotation_matrix = new THREE.Matrix4().makeRotationZ(angleRad); // Animated rotation will be in .01 radians along object's X axis
-// };
-// setQuaternions();
 
 function init() {
-    // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
-    // camera.position.set( - 1, 1, 1 ).normalize().multiplyScalar( 10 );
 
     // environment
     // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
@@ -136,10 +65,9 @@ function init() {
         0.1,
         1000
     );
-    // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
-    // camera.position.set( - 1, 1, 1 ).normalize().multiplyScalar( 10 );
 
-    camera.position.z = 10;
+    camera.position.z = 15;
+    camera.position.y = 10;
     // camera.position.set( - 1, 1, 1 ).normalize().multiplyScalar( 10 );
 
     scene = new THREE.Scene();
@@ -156,19 +84,6 @@ function init() {
     directionalLight.shadow.bias = -1e-4;
     directionalLight.shadow.normalBias = 1e-4;
     scene.add(directionalLight);
-
-    
-    // const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.1);
-    // directionalLight2.position.set(3, 10, 3).multiplyScalar(3);
-    // directionalLight2.castShadow = true;
-    // directionalLight2.shadow.mapSize.setScalar(2048);
-    // directionalLight2.shadow.bias = -1e-4;
-    // directionalLight2.shadow.normalBias = 1e-4;
-    // scene.add(directionalLight2);
-
-    // renderer = new THREE.WebGLRenderer();
-    // renderer.setSize(window.innerWidth, window.innerHeight);
-    // document.body.appendChild(renderer.domElement);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -233,26 +148,11 @@ function init() {
     ballMesh.castShadow = true;
     scene.add(ballMesh);
 
-    //     const geometry = new THREE.BoxGeometry();
-    // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    // const cube = new THREE.Mesh(geometry, material);
-    // scene.add(cube);
-
-    // create wireframe
-    // wireframe = new THREE.Mesh(
-    //     undefined,
-    //     new THREE.MeshBasicMaterial( { color: 0x009688, wireframe: true } ),
-    // );
-    // scene.add( wireframe );
-    // create wireframe
-    // wireframe = new THREE.Mesh(
-    //     undefined,
-    //     new THREE.MeshBasicMaterial( { color: 0x009688, wireframe: true } ),
-    // );
-    // scene.add( wireframe );
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
+
+    //set camera to look at ballMesh
+    camera.lookAt(ballMesh.position);
 
     renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -261,21 +161,16 @@ function init() {
     //     controls.minDistance = 5;
     //     controls.maxDistance = 75;
     // }
+
+    addObstacle();
+    addObstacle();
+    addObstacle();
+
+
 }
 
 init();
 
-var rotation_matrix = null;
-
-var setQuaternions = function () {
-    setMatrix();
-    ballMesh.rotation.set(Math.PI / 2, Math.PI / 4, Math.PI / 4); // Set initial rotation
-    ballMesh.matrix.makeRotationFromEuler(ballMesh.rotation); // Apply rotation to the object's matrix
-};
-var setMatrix = function () {
-    rotation_matrix = new THREE.Matrix4().makeRotationZ(angleRad); // Animated rotation will be in .01 radians along object's X axis
-};
-setQuaternions();
 
 const animate = function () {
     requestAnimationFrame(animate);
@@ -283,7 +178,16 @@ const animate = function () {
     if (is_running) {
         if (isMobile) {
             // Mobile mode motion controls
+            // accelX = 0.5
+            // accelY = 0.5
             if (accelX != null && accelY != null) {
+
+                if (detectCollision() === true){
+                    resetScore();
+                }
+                moveObstacles();
+                updateScore();
+                accelX = 0.5
 
                 let mobileVelocityX = 0;
                 let mobileVelocityY = 0;
@@ -334,7 +238,11 @@ const animate = function () {
         } else if (isMobile === false) {
             // desktop controls
 
-            // start of new test
+            if (detectCollision() === true){
+                resetScore();
+            }
+            moveObstacles();
+            updateScore();
 
             // add velocity to ball
             ballMesh.position.x += velocityX;
@@ -385,6 +293,7 @@ const animate = function () {
             else {
                 velocityZ += friction;
             }
+            
         }
     } else {
         //default rotation before method selection
@@ -480,14 +389,6 @@ let usingMobileButton = document.getElementById("using_mobile");
 usingMobileButton.onclick = function (e) {
     console.log("MOBILE BUTTON CLICKED");
     isMobile = true;
-
-    //   console.log('isIOSDevice: ', isIOSDevice());
-
-    //   let browser = navigator.userAgent.toLowerCase();
-    //   console.log('browser: ',  );
-    //   console.log('isChrome: ', isChrome(browser));
-    //   document.getElementById("Browser").innerHTML = browser;
-
     e.preventDefault();
 
     // Request permission for iOS 13+ devices
@@ -537,35 +438,23 @@ function isIOSDevice() {
 
 //funtion to detect keypress of w a s d keys
 function handleKeyDown(event) {
-    // console.log("key pressed: ", event.keyCode);
+    console.log("key pressed: ", event.keyCode);
     switch (event.keyCode) {
         case 119:
             // w - up
-            console.log("up");
-            // accelX += 1;
             velocityZ -= accelerationRate;
-            // cube.rotation.x += 0.05;
-            // accelX =
-            // console.log('left');
             break;
         case 115:
             // s - down
-            // accelX -= 1;
             velocityZ += accelerationRate;
-            // cube.rotation.y += 0.05;
-            // console.log('up');
             break;
         case 97:
             // a - left
             velocityX -= accelerationRate;
-            // accelY += 1;
-            // cube.rotation.x -= 0.05;
             break;
         case 100:
             // d - right
             velocityX += accelerationRate;
-            // accelY -= 1;
-            // cube.rotation.y -= 0.05;
             break;
     }
 }
@@ -579,6 +468,7 @@ function addObstacle() {
     obstacleMesh.position.x = Math.floor(Math.random() * 10);
     obstacleMesh.position.y = 0.5;
     obstacleMesh.position.z = Math.floor(Math.random() * 10);
+    obstacles.push(obstacleMesh);
     scene.add(obstacleMesh);
 }
 
@@ -597,15 +487,15 @@ function isColliding(ball, obstacle) {
             Math.pow(ballZ - obstacleZ, 2)
     );
 
-    return distance < 1;
+    return distance < 2;
 }
 
 //function to detect collision between ball and obstacles
 function detectCollision() {
     // console.log("detecting collision");
     for (let i = 0; i < obstacles.length; i++) {
-        if (isColliding(ball, obstacles[i])) {
-            // console.log("COLLISION DETECTED");
+        if (isColliding(ballMesh, obstacles[i])) {
+            console.log("COLLISION DETECTED");
             // console.log("ball", ball.position);
             // console.log("obstacle", obstacles[i].position);
             return true;
@@ -616,14 +506,16 @@ function detectCollision() {
 
 //function to update the score when the ball collides with an obstacle
 function updateScore() {
+    score++;
     let scoreElement = document.getElementById("score");
-    let score = parseInt(scoreElement.innerHTML);
-    scoreElement.innerHTML = score + 1;
+    scoreElement.innerHTML = score;
 }
 
 //function to reset the score when the ball collides with an obstacle
 function resetScore() {
-    document.getElementById("score").innerHTML = 0;
+    score = 0;
+    let scoreElement = document.getElementById("score");
+    scoreElement.innerHTML = score;
 }
 
 //function to detect if the ball is out of bounds
@@ -637,4 +529,23 @@ function outOfBounds() {
     return distance > 10;
 }
 
-//function
+//function to move the position of all obstacles closer to ballMesh
+function moveObstacles() {
+    for (let i = 0; i < obstacles.length; i++) {
+        let obstacle = obstacles[i];
+        let obstacleX = obstacle.position.x;
+        let obstacleZ = obstacle.position.z;
+
+        let ballX = ballMesh.position.x;
+        let ballZ = ballMesh.position.z;
+
+        let distanceX = obstacleX - ballX;
+        let distanceZ = obstacleZ - ballZ;
+
+        let newX = obstacleX - distanceX / 70;
+        let newZ = obstacleZ - distanceZ / 70;
+
+        obstacle.position.x = newX;
+        obstacle.position.z = newZ;
+    }
+}

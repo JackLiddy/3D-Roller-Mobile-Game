@@ -85,3 +85,5 @@ add obstacles
 
 
 refactor such that mobile and keyboard mode share most motion controls such as rotation and friction
+
+remove console.logs
