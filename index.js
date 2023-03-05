@@ -53,6 +53,7 @@ var ballVelocity = new THREE.Vector3();
 var ballRotationAxis = new THREE.Vector3(0, 1, 0);
 
 let score = 0;
+let gameClock = 0;
 
 
 function init() {
@@ -163,8 +164,6 @@ function init() {
     // }
 
     addObstacle();
-    addObstacle();
-    addObstacle();
 
 
 }
@@ -187,6 +186,15 @@ const animate = function () {
                 }
                 moveObstacles();
                 updateScore();
+
+                if (score % 100 === 0) {
+                    addObstacle();
+                }
+                gameClock++;
+                if (gameClock > 10000) {
+                    gameClock = 0;
+                    obstacles = [];
+                }
 
                 let mobileVelocityX = 0;
                 let mobileVelocityY = 0;
@@ -242,6 +250,15 @@ const animate = function () {
             }
             moveObstacles();
             updateScore();
+
+            if (score % 100 === 0) {
+                addObstacle();
+            }
+            gameClock++;
+            if (gameClock > 10000) {
+                gameClock = 0;
+                obstacles = [];
+            }
 
             // add velocity to ball
             ballMesh.position.x += velocityX;
