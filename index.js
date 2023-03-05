@@ -280,19 +280,10 @@ setQuaternions();
 const animate = function () {
     requestAnimationFrame(animate);
 
-    // cube.rotation.x += 0.01;
-    // cube.rotation.y += 0.01;
-    //cube.rotation.x += 0.001 + gx/10;
-    //cube.rotation.y += 0.001 + gy/10;
-
-    //update rotation
     if (is_running) {
         if (isMobile) {
+            // Mobile mode motion controls
             if (accelX != null && accelY != null) {
-
-                // console.log(rotating );
-                // ballMesh.rotation.x += accelX / 100;
-                // ballMesh.rotation.y += accelY / 100;
 
                 let mobileVelocityX = 0;
                 let mobileVelocityY = 0;
@@ -394,73 +385,6 @@ const animate = function () {
             else {
                 velocityZ += friction;
             }
-
-
-
-            // velocityX -= friction;
-            // velocityY -= friction;
-            // velocityZ -= friction;
-
-
-            //validate ball is withing its borders otherwise go in the mirror direction
-            // if (Math.abs(ballMesh.position.x) > borders[0]) {
-            //     velocityX *= -1;
-            //     ballMesh.position.x =
-            //     ballMesh.position.x < 0 ? borders[0] * -1 : borders[0];
-            // }
-
-            // if (Math.abs(ballMesh.position.y) > borders[1]) {
-            //     velocityY *= -1;
-            //     ballMesh.position.y =
-            //         ballMesh.position.y < 0 ? borders[1] * -1 : borders[1];
-            // }
-
-            // reduce ball height with gravity
-            // velocityZ -= gravity;
-
-            // end of new test
-
-            // camera.position.z += 0.1;
-
-
-
-            console.log("adjusting rotation via keyboard");
-            // ballMesh.rotation.x += accelX / 100;
-            // ballMesh.rotation.y += accelY / 100;
-            // ballMesh.position.x -= ( accelY / 100);
-            // ballMesh.position.z -= ( accelX / 100);
-            // ballMesh.position.x += 0.1;
-            // let rotateAngle1 = ( accelY / 100);
-            // let rotateAngle2 = ( -accelX / 100);
-
-            // let rotateAngle = 0.01;
-            // ballMesh.rotateOnAxis(new THREE.Vector3(0,0,1), rotateAngle1);
-            // ballMesh.rotateOnAxis(new THREE.Vector3(1,0,0), rotateAngle2);
-
-            // let velocityX = 1;
-            // let velocityZ = 0;
-            // let velocityY = 0;
-
-            // ballMesh.position.x += velocityX;
-            // ballMesh.position.z += velocityZ;
-            // ballMesh.position.y += velocityY;
-
-            // // Figure out the rotation based on the velocity and radius of the ball...
-            // ballVelocity.set(velocityX, velocityY, velocityZ);
-            // ballRotationAxis.set(0, 0, 1).cross(ballVelocity).normalize();
-            // var velocityMag = ballVelocity.length();
-            // var rotationAmount =
-            //     (velocityMag * (Math.PI * 2)) / ballCircumference;
-            // ballMesh.rotateOnWorldAxis(ballRotationAxis, rotationAmount);
-
-            // ballMesh.position.x += velocityX;
-            // ballMesh.position.z += velocityZ;
-            // ballMesh.position.y += velocityY;
-
-            // ballMesh.position.y += accelX / 100;
-
-            // ballMesh.rotation.set(along_x, along_y, along_z);
-            // ballMesh.rotation.z += 1;
         }
     } else {
         //default rotation before method selection
@@ -645,3 +569,72 @@ function handleKeyDown(event) {
             break;
     }
 }
+
+
+//function to add obstacles to the three.js scene
+function addObstacle() {
+    let obstacleGeometry = new THREE.BoxGeometry(1, 1, 1);
+    let obstacleMaterial = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+    let obstacleMesh = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
+    obstacleMesh.position.x = Math.floor(Math.random() * 10);
+    obstacleMesh.position.y = 0.5;
+    obstacleMesh.position.z = Math.floor(Math.random() * 10);
+    scene.add(obstacleMesh);
+}
+
+function isColliding(ball, obstacle) {
+    let ballX = ball.position.x;
+    let ballY = ball.position.y;
+    let ballZ = ball.position.z;
+
+    let obstacleX = obstacle.position.x;
+    let obstacleY = obstacle.position.y;
+    let obstacleZ = obstacle.position.z;
+
+    let distance = Math.sqrt(
+        Math.pow(ballX - obstacleX, 2) +
+            Math.pow(ballY - obstacleY, 2) +
+            Math.pow(ballZ - obstacleZ, 2)
+    );
+
+    return distance < 1;
+}
+
+//function to detect collision between ball and obstacles
+function detectCollision() {
+    // console.log("detecting collision");
+    for (let i = 0; i < obstacles.length; i++) {
+        if (isColliding(ball, obstacles[i])) {
+            // console.log("COLLISION DETECTED");
+            // console.log("ball", ball.position);
+            // console.log("obstacle", obstacles[i].position);
+            return true;
+        }
+    }
+    return false;
+}
+
+//function to update the score when the ball collides with an obstacle
+function updateScore() {
+    let scoreElement = document.getElementById("score");
+    let score = parseInt(scoreElement.innerHTML);
+    scoreElement.innerHTML = score + 1;
+}
+
+//function to reset the score when the ball collides with an obstacle
+function resetScore() {
+    document.getElementById("score").innerHTML = 0;
+}
+
+//function to detect if the ball is out of bounds
+function outOfBounds() {
+    // console.log("detecting out of bounds");
+    let ballX = ball.position.x;
+    let ballZ = ball.position.z;
+    let distance = Math.sqrt(Math.pow(ballX, 2) + Math.pow(ballZ, 2));
+
+    // console.log("distance", distance);
+    return distance > 10;
+}
+
+//function

@@ -78,3 +78,10 @@ mobile module
     change so phone tilt doesnt set the speed but increases the speed by a amount based on the tilt
     allows for incremental increase of speed by holding the tilt 
     have it capped at a top speed
+
+make camera overhead and follow ball
+
+add obstacles
+
+
+refactor such that mobile and keyboard mode share most motion controls such as rotation and friction
