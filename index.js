@@ -294,7 +294,8 @@ const animate = function () {
                 // ballMesh.rotation.x += accelX / 100;
                 // ballMesh.rotation.y += accelY / 100;
                 velocityX = accelX;
-                velocityY = accelY;
+                // velocityY = accelY;
+                velocityZ = accelY;
 
                 // add velocity to ball
                 ballMesh.position.x += velocityX;
