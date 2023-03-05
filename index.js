@@ -47,11 +47,14 @@ let accelY = 0;
 let isMobile = null;
 let is_running = false;
 
+let accelerationRate = 0.1;
+
 // var degrees = 35;
 // var power = 0.45;
 
-var degrees = -45;
-var power = 0.10;
+// motion vector accounting for power and direction
+var degrees = 0;
+var power = 0.00;
 
 // var degrees = 35;
 // var power = 0.01;
@@ -73,6 +76,21 @@ console.log('velocityX: ' + velocityX);
 console.log('velocityY: ' + velocityY);
 console.log('velocityZ: ' + velocityZ);
 
+
+
+
+// function to determine
+
+
+
+
+
+
+
+
+
+
+
 // velocityX = -0.1;
 // velocityY = 0.0;
 // velocityZ = 0.0; //test 0
@@ -82,7 +100,7 @@ console.log('velocityZ: ' + velocityZ);
 // var velocityY = 0;
 // var velocityZ = 0.5;
 
-var friction = 1;
+var friction = 0.001
 var gravity = 0.2;
 var bounciness = 0.9;
 
@@ -277,6 +295,32 @@ const animate = function () {
             // velocityX *= friction;
             // velocityY *= friction;
             // velocityZ *= friction;
+
+
+            
+            // let xDirection = velocityX > 0 ? 1 : -1;
+            // let zDirection = velocityZ > 0 ? 1 : -1;
+
+            if (velocityX > 0) {
+                velocityX -= friction;
+            }
+            else {
+                velocityX += friction;
+            }
+            if (velocityZ > 0) {   
+                velocityZ -= friction;
+            }
+            else {
+                velocityZ += friction;
+            }
+
+
+
+            // velocityX -= friction;
+            // velocityY -= friction;
+            // velocityZ -= friction;
+
+
             //validate ball is withing its borders otherwise go in the mirror direction
             // if (Math.abs(ballMesh.position.x) > borders[0]) {
             //     velocityX *= -1;
@@ -491,25 +535,29 @@ function handleKeyDown(event) {
         case 119:
             // w - up
             console.log("up");
-            accelX += 1;
+            // accelX += 1;
+            velocityZ -= accelerationRate;
             // cube.rotation.x += 0.05;
             // accelX =
             // console.log('left');
             break;
         case 115:
             // s - down
-            accelX -= 1;
+            // accelX -= 1;
+            velocityZ += accelerationRate;
             // cube.rotation.y += 0.05;
             // console.log('up');
             break;
         case 97:
             // a - left
-            accelY += 1;
+            velocityX -= accelerationRate;
+            // accelY += 1;
             // cube.rotation.x -= 0.05;
             break;
         case 100:
             // d - right
-            accelY -= 1;
+            velocityX += accelerationRate;
+            // accelY -= 1;
             // cube.rotation.y -= 0.05;
             break;
     }
