@@ -72,3 +72,9 @@ To Do
     Fix shadow plane, expand region
     Use code that slices in plane or add new plane
     Add obstacles
+
+
+mobile module  
+    change so phone tilt doesnt set the speed but increases the speed by a amount based on the tilt
+    allows for incremental increase of speed by holding the tilt 
+    have it capped at a top speed

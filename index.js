@@ -299,11 +299,11 @@ const animate = function () {
 
                 // diable motion if too low
                 if (Math.abs(accelX) > 0.1) {
-                    mobileVelocityX = accelX / 40;
+                    mobileVelocityX = accelX / 25;
                 }
                 // now the same for accelY and mobileVelocityY
                 if (Math.abs(accelY) > 0.1) {
-                    mobileVelocityY = -accelY / 40;
+                    mobileVelocityY = -accelY / 25;
                 }
 
                 velocityX = mobileVelocityX;
