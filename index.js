@@ -50,7 +50,7 @@ let is_running = false;
 // var degrees = 35;
 // var power = 0.45;
 
-var degrees = 0;
+var degrees = -45;
 var power = 0.10;
 
 // var degrees = 35;
@@ -255,10 +255,10 @@ const animate = function () {
             
 
             //validate if ball is stop moving
-            if (Math.abs(velocityX) < 0.02 && Math.abs(velocityY) < 0.02) {
-                console.log("DONE!");
-                return;
-            }
+            // if (Math.abs(velocityX) < 0.02 && Math.abs(velocityY) < 0.02) {
+            //     console.log("DONE!");
+            //     return;
+            // }
             // handle boucing effect
             // if (ballMesh.position.z < 1) {
             //     velocityZ *= -bounciness;
