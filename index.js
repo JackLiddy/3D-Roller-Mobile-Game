@@ -30,7 +30,6 @@ const canvas = document.querySelector("canvas.webgl");
 //camera.position.z = 5;
 // camera.position.z = 3;
 
-
 // const renderer = new THREE.WebGLRenderer();
 
 let camera, scene, renderer;
@@ -48,6 +47,62 @@ let accelY = 0;
 let isMobile = null;
 let is_running = false;
 
+// var degrees = 35;
+// var power = 0.45;
+
+var degrees = 0;
+var power = 0.10;
+
+// var degrees = 35;
+// var power = 0.01;
+
+var angleRad = (degrees * Math.PI) / 180;
+
+// var velocityX = Math.cos(angleRad) * power;
+// var velocityY = Math.sin(angleRad) * power;
+// var velocityZ = 0; //test 0
+
+var velocityX = Math.cos(angleRad) * power;
+var velocityZ = Math.sin(angleRad) * power;
+var velocityY = 0; //test 0
+
+
+console.log('angleRad: ' + angleRad);
+
+console.log('velocityX: ' + velocityX);
+console.log('velocityY: ' + velocityY);
+console.log('velocityZ: ' + velocityZ);
+
+// velocityX = -0.1;
+// velocityY = 0.0;
+// velocityZ = 0.0; //test 0
+
+
+// var velocityX  = 0;
+// var velocityY = 0;
+// var velocityZ = 0.5;
+
+var friction = 1;
+var gravity = 0.2;
+var bounciness = 0.9;
+
+var ballRadius = 2;
+var ballCircumference = Math.PI * ballRadius * 2;
+var ballVelocity = new THREE.Vector3();
+var ballRotationAxis = new THREE.Vector3(0, 1, 0);
+
+//new approach
+// var rotation_matrix = null;
+
+// var setQuaternions = function () {
+//     setMatrix();
+//     ballMesh.rotation.set(Math.PI / 2, Math.PI / 4, Math.PI / 4); // Set initial rotation
+//     ballMesh.matrix.makeRotationFromEuler(ballMesh.rotation); // Apply rotation to the object's matrix
+// };
+// var setMatrix = function () {
+//     rotation_matrix = new THREE.Matrix4().makeRotationZ(angleRad); // Animated rotation will be in .01 radians along object's X axis
+// };
+// setQuaternions();
 
 function init() {
     // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
@@ -64,54 +119,53 @@ function init() {
     // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
     // camera.position.set( - 1, 1, 1 ).normalize().multiplyScalar( 10 );
 
-    camera.position.z = 4;
+    camera.position.z = 10;
     // camera.position.set( - 1, 1, 1 ).normalize().multiplyScalar( 10 );
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xfce4ec );
+    scene.background = new THREE.Color(0xfce4ec);
 
     // lights
-    const ambient = new THREE.HemisphereLight( 0xffffff, 0xbfd4d2, 0.9 );
-    scene.add( ambient );
+    const ambient = new THREE.HemisphereLight(0xffffff, 0xbfd4d2, 0.9);
+    scene.add(ambient);
 
-    const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.1 );
-    directionalLight.position.set( 1, 4, 3 ).multiplyScalar( 3 );
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.1);
+    directionalLight.position.set(1, 4, 3).multiplyScalar(3);
     directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.setScalar( 2048 );
-    directionalLight.shadow.bias = - 1e-4;
+    directionalLight.shadow.mapSize.setScalar(2048);
+    directionalLight.shadow.bias = -1e-4;
     directionalLight.shadow.normalBias = 1e-4;
-    scene.add( directionalLight );
+    scene.add(directionalLight);
 
     // renderer = new THREE.WebGLRenderer();
     // renderer.setSize(window.innerWidth, window.innerHeight);
     // document.body.appendChild(renderer.domElement);
 
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    document.body.appendChild( renderer.domElement );
+    document.body.appendChild(renderer.domElement);
 
     // add shadow plane
     const plane = new THREE.Mesh(
         new THREE.PlaneGeometry(),
-        new THREE.ShadowMaterial( {
+        new THREE.ShadowMaterial({
             color: 0xd81b60,
             transparent: true,
             opacity: 0.075,
             side: THREE.DoubleSide,
-        } ),
+        })
     );
-    plane.position.y = - 3;
-    plane.rotation.x = - Math.PI / 2;
-    plane.scale.setScalar( 10 );
+    plane.position.y = -3;
+    plane.rotation.x = -Math.PI / 2;
+    plane.scale.setScalar(10);
     plane.receiveShadow = true;
-    scene.add( plane );
+    scene.add(plane);
 
-
-    let ballGeometry = new THREE.IcosahedronGeometry( 2, 3 )
-    let ballMaterial = new THREE.MeshStandardMaterial( {
+    let ballGeometry = new THREE.IcosahedronGeometry(2, 3);
+    let ballMaterial = new THREE.MeshStandardMaterial({
         flatShading: true,
         // color: 0xff9800,
         // emissive: 0xff9800,
@@ -119,15 +173,15 @@ function init() {
         polygonOffset: true,
         polygonOffsetUnits: 1,
         polygonOffsetFactor: 1,
-    } );
-    ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);   
-    ballMesh.castShadow = true; 
+    });
+    ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);
+    ballMesh.castShadow = true;
     scene.add(ballMesh);
 
-//     const geometry = new THREE.BoxGeometry();
-// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-// const cube = new THREE.Mesh(geometry, material);
-// scene.add(cube);
+    //     const geometry = new THREE.BoxGeometry();
+    // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    // const cube = new THREE.Mesh(geometry, material);
+    // scene.add(cube);
 
     // create wireframe
     // wireframe = new THREE.Mesh(
@@ -135,7 +189,7 @@ function init() {
     //     new THREE.MeshBasicMaterial( { color: 0x009688, wireframe: true } ),
     // );
     // scene.add( wireframe );
-    				// create wireframe
+    // create wireframe
     // wireframe = new THREE.Mesh(
     //     undefined,
     //     new THREE.MeshBasicMaterial( { color: 0x009688, wireframe: true } ),
@@ -145,17 +199,28 @@ function init() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
     // controls
-//     const controls = new OrbitControls( camera, renderer.domElement );
-//     controls.minDistance = 5;
-//     controls.maxDistance = 75;
-// }
+    //     const controls = new OrbitControls( camera, renderer.domElement );
+    //     controls.minDistance = 5;
+    //     controls.maxDistance = 75;
+    // }
 }
 
-
 init();
+
+var rotation_matrix = null;
+
+var setQuaternions = function () {
+    setMatrix();
+    ballMesh.rotation.set(Math.PI / 2, Math.PI / 4, Math.PI / 4); // Set initial rotation
+    ballMesh.matrix.makeRotationFromEuler(ballMesh.rotation); // Apply rotation to the object's matrix
+};
+var setMatrix = function () {
+    rotation_matrix = new THREE.Matrix4().makeRotationZ(angleRad); // Animated rotation will be in .01 radians along object's X axis
+};
+setQuaternions();
 
 const animate = function () {
     requestAnimationFrame(animate);
@@ -165,26 +230,115 @@ const animate = function () {
     //cube.rotation.x += 0.001 + gx/10;
     //cube.rotation.y += 0.001 + gy/10;
 
-    //update rotation 
+    //update rotation
     if (is_running) {
         if (isMobile) {
             if (accelX != null && accelY != null) {
                 // console.log(rotating );
-                ballMesh.rotation.x += ( accelX / 100);
-                ballMesh.rotation.y += ( accelY / 100);
+                ballMesh.rotation.x += accelX / 100;
+                ballMesh.rotation.y += accelY / 100;
             } else {
                 // cube.rotation.x += 0.0001;
                 // cube.rotation.y += 0.0001;
-            }   
+            }
+        } else if (isMobile === false) {
+            // desktop controls
+
+            // start of new test
+
+            // add velocity to ball
+            ballMesh.position.x += velocityX;
+            ballMesh.position.z += velocityZ;
+            ballMesh.position.y += velocityY;
+
+            // ballMesh.position.z += 0.1;
+            
+
+            //validate if ball is stop moving
+            if (Math.abs(velocityX) < 0.02 && Math.abs(velocityY) < 0.02) {
+                console.log("DONE!");
+                return;
+            }
+            // handle boucing effect
+            // if (ballMesh.position.z < 1) {
+            //     velocityZ *= -bounciness;
+            //     ballMesh.position.z = 1;
+            // }
+            // Figure out the rotation based on the velocity and radius of the ballMesh...
+            ballVelocity.set(velocityX, velocityY, velocityZ);
+            ballRotationAxis.set(0, 1, 0).cross(ballVelocity).normalize(); //!!!!!!
+            var velocityMag = ballVelocity.length();
+            var rotationAmount =
+                (velocityMag * (Math.PI * 2)) / ballCircumference;
+            ballMesh.rotateOnWorldAxis(ballRotationAxis, rotationAmount);
+
+            //reducing speed by friction
+            // angleRad *= friction;
+            // velocityX *= friction;
+            // velocityY *= friction;
+            // velocityZ *= friction;
+            //validate ball is withing its borders otherwise go in the mirror direction
+            // if (Math.abs(ballMesh.position.x) > borders[0]) {
+            //     velocityX *= -1;
+            //     ballMesh.position.x =
+            //     ballMesh.position.x < 0 ? borders[0] * -1 : borders[0];
+            // }
+
+            // if (Math.abs(ballMesh.position.y) > borders[1]) {
+            //     velocityY *= -1;
+            //     ballMesh.position.y =
+            //         ballMesh.position.y < 0 ? borders[1] * -1 : borders[1];
+            // }
+
+            // reduce ball height with gravity
+            // velocityZ -= gravity;
+
+            // end of new test
+
+            // camera.position.z += 0.1;
+
+
+
+            console.log("adjusting rotation via keyboard");
+            // ballMesh.rotation.x += accelX / 100;
+            // ballMesh.rotation.y += accelY / 100;
+            // ballMesh.position.x -= ( accelY / 100);
+            // ballMesh.position.z -= ( accelX / 100);
+            // ballMesh.position.x += 0.1;
+            // let rotateAngle1 = ( accelY / 100);
+            // let rotateAngle2 = ( -accelX / 100);
+
+            // let rotateAngle = 0.01;
+            // ballMesh.rotateOnAxis(new THREE.Vector3(0,0,1), rotateAngle1);
+            // ballMesh.rotateOnAxis(new THREE.Vector3(1,0,0), rotateAngle2);
+
+            // let velocityX = 1;
+            // let velocityZ = 0;
+            // let velocityY = 0;
+
+            // ballMesh.position.x += velocityX;
+            // ballMesh.position.z += velocityZ;
+            // ballMesh.position.y += velocityY;
+
+            // // Figure out the rotation based on the velocity and radius of the ball...
+            // ballVelocity.set(velocityX, velocityY, velocityZ);
+            // ballRotationAxis.set(0, 0, 1).cross(ballVelocity).normalize();
+            // var velocityMag = ballVelocity.length();
+            // var rotationAmount =
+            //     (velocityMag * (Math.PI * 2)) / ballCircumference;
+            // ballMesh.rotateOnWorldAxis(ballRotationAxis, rotationAmount);
+
+            // ballMesh.position.x += velocityX;
+            // ballMesh.position.z += velocityZ;
+            // ballMesh.position.y += velocityY;
+
+            // ballMesh.position.y += accelX / 100;
+
+            // ballMesh.rotation.set(along_x, along_y, along_z);
+            // ballMesh.rotation.z += 1;
         }
-        else if (isMobile === false) {
-            console.log('adjusting rotation via keyboard');
-            ballMesh.rotation.x += accelX / 100;
-            ballMesh.rotation.y += accelY / 100;
-        }
-    }
-    else {
-        //default rotation
+    } else {
+        //default rotation before method selection
         // cube.rotation.x += 0.005;
         // cube.rotation.y += 0.005;
     }
@@ -192,12 +346,10 @@ const animate = function () {
     // camera.position.z += 0.05;
     // camera.position.y += 0.01;
 
-
     //rotate camera around postition of the ball
     // camera.position.x = ballMesh.position.x + 10 * Math.sin( Date.now() / 1000 );
     // camera.position.z = ballMesh.position.z + 10 * Math.cos( Date.now() / 1000 );
-    camera.lookAt( ballMesh.position );
-    
+    // camera.lookAt( ballMesh.position );
 
     renderer.render(scene, camera);
 };
@@ -226,11 +378,6 @@ function updateFieldIfNotNull(fieldName, value, precision = 10) {
 
 // Handle device motion change
 function handleMotion(event) {
-    //   accelX = event.accelerationIncludingGravity.x;
-    //   accelY = event.accelerationIncludingGravity.y;
-
-    // accelY = event.accelerationIncludingGravity.x;
-    // accelX = event.accelerationIncludingGravity.y;
     accelY = event.accelerationIncludingGravity.x;
     accelX = event.accelerationIncludingGravity.y;
 
@@ -249,14 +396,6 @@ function handleMotion(event) {
         event.accelerationIncludingGravity.z
     );
 
-    // updateFieldIfNotNull("Accelerometer_x", event.acceleration.x);
-    // updateFieldIfNotNull("Accelerometer_y", event.acceleration.y);
-    // updateFieldIfNotNull("Accelerometer_z", event.acceleration.z);
-
-    //   updateFieldIfNotNull("Accelerometer_i", event.interval, 2);
-    //   updateFieldIfNotNull("Gyroscope_z", event.rotationRate.alpha);
-    //   updateFieldIfNotNull("Gyroscope_x", event.rotationRate.beta);
-    //   updateFieldIfNotNull("Gyroscope_y", event.rotationRate.gamma);
     incrementEventCount();
 }
 
@@ -266,8 +405,6 @@ usingKeyboardButton.onclick = function (e) {
     console.log("KEYBOARD BUTTON CLICKED");
     window.addEventListener("keypress", handleKeyDown);
     isMobile = false;
-    
-
 
     // Toggle running state and mobile button
     if (is_running) {
@@ -285,10 +422,9 @@ usingKeyboardButton.onclick = function (e) {
         usingKeyboardButton.classList.add("btn-danger");
 
         //hide popover
-        document.getElementById("popover").style.display = "none"
+        document.getElementById("popover").style.display = "none";
         is_running = true;
     }
-
 };
 
 let usingMobileButton = document.getElementById("using_mobile");
@@ -348,28 +484,6 @@ function isIOSDevice() {
     );
 }
 
-//function to read the value of the orientation sensor on an iOS device
-// function readOrientation() {
-//   if (window.DeviceOrientationEvent) {
-//     window.addEventListener("deviceorientation", handleOrientation, true);
-//   }
-// }
-
-//function to detect if the browser is chrome
-// function isChrome(browser) {
-//   return browser.indexOf("chrome") > -1;
-// }
-
-//function to detect what browser is running
-// function detectBrowser() {
-//   let browser = navigator.userAgent.toLowerCase();
-//   if (isChrome(browser)) {
-//     console.log("Browser is Chrome");
-//   } else {
-//     console.log("Browser is not Chrome");
-//   }
-// }
-
 //funtion to detect keypress of w a s d keys
 function handleKeyDown(event) {
     // console.log("key pressed: ", event.keyCode);
@@ -379,7 +493,7 @@ function handleKeyDown(event) {
             console.log("up");
             accelX += 1;
             // cube.rotation.x += 0.05;
-            // accelX = 
+            // accelX =
             // console.log('left');
             break;
         case 115:
@@ -399,25 +513,4 @@ function handleKeyDown(event) {
             // cube.rotation.y -= 0.05;
             break;
     }
-
-    // switch (event.keyCode) {
-    //     case 37:
-    //         // left
-    //         cube.rotation.x += 0.05;
-    //         console.log('left');
-    //         break;
-    //     case 38:
-    //         // up
-    //         cube.rotation.y += 0.05;
-    //         console.log('up');
-    //         break;
-    //     case 39:
-    //         // right
-    //         cube.rotation.x -= 0.05;
-    //         break;
-    //     case 40:
-    //         // down
-    //         cube.rotation.y -= 0.05;
-    //         break;
-    // }
 }
