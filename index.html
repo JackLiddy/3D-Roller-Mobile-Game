@@ -10,6 +10,28 @@
         <canvas class="webgl"></canvas>
         <!-- <p style="margin-top:1rem;">Score: <span class="badge badge-warning" id="score">0</span></p> -->
 
+        <!--implement scorecard found in style.css-->
+        <div class="scorecard">
+            <div class="scorecard__header">
+                <h1 class="scorecard__title">Score</h1>
+                <p class="scorecard__subtitle">Score: <span class="badge badge-warning" id="score">0</span></p>
+            </div>
+            <div class="scorecard__body">
+                <div class="scorecard__item">
+                    <h2 class="scorecard__value">0</h2>
+                    <p class="scorecard__label">Num. of datapoints: <span class="badge badge-warning" id="num-observed-events">0</span></p>
+                </div>
+                <div class="scorecard__item">
+                    <h2 class="scorecard__value">0</h2>
+                    <p class="scorecard__label">X-axis: <span id="Accelerometer_gx">0</span><span> m/s<sup>2</sup></span></p>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
         <main id="popover2" role="main" class="container">
             <!-- <div2 class="p-3 mb-2 bg-secondary" id="demo-div"> -->
                 <p style="margin-top:1rem;">Score: <span class="badge badge-warning" id="score">0</span></p>
@@ -28,12 +50,6 @@
             <li>X-axis: <span id="Accelerometer_gx">0</span><span> m/s<sup>2</sup></span></li>
             <li>Y-axis: <span id="Accelerometer_gy">0</span><span> m/s<sup>2</sup></span></li>
             <li>Z-axis: <span id="Accelerometer_gz">0</span><span> m/s<sup>2</sup></span></li>
-            <!-- <li>Orientation_a: <span id="Orientation_a">0</span><span> m/s<sup>2</sup></span></li> -->
-            <!-- <li>Orientation_b: <span id="Orientation_b">0</span><span> m/s<sup>2</sup></span></li> -->
-            <!-- <li>Orientation_g: <span id="Orientation_g">0</span><span> m/s<sup>2</sup></span></li> -->
-            <!-- <li>browser: <span id="Browser"></span></li> -->
-
-            <!-- <li>i value: <span id="Accelerometer_i">0</span><span> m/s<sup>2</sup></span></li> -->
         </ul>
             </div>
         </main>

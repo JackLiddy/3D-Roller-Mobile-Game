@@ -67,3 +67,20 @@ button{
     width: 100%;
     height: 100%;
 }
+
+
+/* css element for a visually attractive score card at the top of the canvas */
+
+.scorecard {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 100;
+}

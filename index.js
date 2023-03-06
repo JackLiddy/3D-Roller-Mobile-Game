@@ -19,15 +19,15 @@ let obstacles = [];
 let rotationChangeX = 0;
 let rotationChangeY = 0;
 
-let accelX = 0;
-let accelY = 0;
+let gyroscopeX = 0;
+let gyroscopeY = 0;
 
 let isMobile = null;
 let is_running = false;
 
 // motion vector accounting for power and direction
 let degrees = 0;
-let power = 0.00;
+let power = 0.0;
 
 let angleRad = (degrees * Math.PI) / 180;
 
@@ -35,13 +35,12 @@ let velocityX = Math.cos(angleRad) * power;
 let velocityZ = Math.sin(angleRad) * power;
 let velocityY = 0; //test 0
 
-console.log('angleRad: ' + angleRad);
-console.log('velocityX: ' + velocityX);
-console.log('velocityY: ' + velocityY);
-console.log('velocityZ: ' + velocityZ);
+console.log("angleRad: " + angleRad);
+console.log("velocityX: " + velocityX);
+console.log("velocityY: " + velocityY);
+console.log("velocityZ: " + velocityZ);
 
 let accelerationRate = 0.2;
-
 
 var friction = 0.001;
 var gravity = 0.2;
@@ -55,9 +54,7 @@ var ballRotationAxis = new THREE.Vector3(0, 1, 0);
 let score = 0;
 let gameClock = 0;
 
-
 function init() {
-
     // environment
     // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 100 );
     camera = new THREE.PerspectiveCamera(
@@ -104,16 +101,16 @@ function init() {
     //     })
     // );
 
-        // add shadow plane
-        const plane = new THREE.Mesh(
-            new THREE.PlaneGeometry(55, 55),
-            new THREE.ShadowMaterial({
-                color: 0xd81b60,
-                transparent: true,
-                opacity: 0.075,
-                side: THREE.DoubleSide,
-            })
-        );
+    // add shadow plane
+    const plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(55, 55),
+        new THREE.ShadowMaterial({
+            color: 0xd81b60,
+            transparent: true,
+            opacity: 0.075,
+            side: THREE.DoubleSide,
+        })
+    );
     plane.position.y = -2;
     plane.rotation.x = -Math.PI / 2;
     plane.scale.setScalar(10);
@@ -164,109 +161,51 @@ function init() {
     // }
 
     addObstacle();
-
-
 }
 
 init();
-
 
 const animate = function () {
     requestAnimationFrame(animate);
 
     if (is_running) {
+        // movement controls
+
+        if (detectCollision() === true) {
+            resetScore();
+        }
+        moveObstacles();
+        updateScore();
+
+        if (score % 100 === 0) {
+            addObstacle();
+        }
+        gameClock++;
+        if (gameClock > 10000) {
+            gameClock = 0;
+            obstacles = [];
+        }
+
         if (isMobile) {
             // Mobile mode motion controls
-            // accelX = 0.5
-            // accelY = 0.5
-            if (accelX != null && accelY != null) {
+            let mobileVelocityX = 0;
+            let mobileVelocityY = 0;
 
-                if (detectCollision() === true){
-                    resetScore();
-                }
-                moveObstacles();
-                updateScore();
-
-                if (score % 100 === 0) {
-                    addObstacle();
-                }
-                gameClock++;
-                if (gameClock > 10000) {
-                    gameClock = 0;
-                    obstacles = [];
-                }
-
-                let mobileVelocityX = 0;
-                let mobileVelocityY = 0;
-
-                // diable motion if too low
-                if (Math.abs(accelX) > 0.1) {
-                    mobileVelocityX = accelX / 30;
-                }
-                // now the same for accelY and mobileVelocityY
-                if (Math.abs(accelY) > 0.1) {
-                    mobileVelocityY = -accelY / 30;
-                }
-
-                velocityX = mobileVelocityX;
-                velocityZ = mobileVelocityY;
-                //test += mobileVelocityX/50;
-
-                // add velocity to ball
-                ballMesh.position.x += velocityX;
-                ballMesh.position.z += velocityZ;
-                ballMesh.position.y += velocityY;
-                // Figure out the rotation based on the velocity and radius of the ballMesh...
-                ballVelocity.set(velocityX, velocityY, velocityZ);
-                ballRotationAxis.set(0, 1, 0).cross(ballVelocity).normalize(); //!!!!!!
-                var velocityMag = ballVelocity.length();
-                var rotationAmount =
-                    (velocityMag * (Math.PI * 2)) / ballCircumference;
-                ballMesh.rotateOnWorldAxis(ballRotationAxis, rotationAmount);
-
-                // apply friction
-                if (velocityX > 0) {
-                    velocityX -= friction;
-                }
-                else {
-                    velocityX += friction;
-                }
-                if (velocityZ > 0) {   
-                    velocityZ -= friction;
-                }
-                else {
-                    velocityZ += friction;
-                }
-
-            } else {
-                // cube.rotation.x += 0.0001;
-                // cube.rotation.y += 0.0001;
+            // diable motion if too low
+            if (Math.abs(gyroscopeX) > 0.1) {
+                mobileVelocityX = gyroscopeX / 30;
             }
+            // now the same for gyroscopeY and mobileVelocityY
+            if (Math.abs(gyroscopeY) > 0.1) {
+                mobileVelocityY = -gyroscopeY / 30;
+            }
+
+            velocityX = mobileVelocityX;
+            velocityZ = mobileVelocityY;
+            //test += mobileVelocityX/50;
+
         } else if (isMobile === false) {
             // desktop controls
-
-            if (detectCollision() === true){
-                resetScore();
-            }
-            moveObstacles();
-            updateScore();
-
-            if (score % 100 === 0) {
-                addObstacle();
-            }
-            gameClock++;
-            if (gameClock > 10000) {
-                gameClock = 0;
-                obstacles = [];
-            }
-
-            // add velocity to ball
-            ballMesh.position.x += velocityX;
-            ballMesh.position.z += velocityZ;
-            ballMesh.position.y += velocityY;
-
-            // ballMesh.position.z += 0.1;
-            
 
             //validate if ball is stop moving
             // if (Math.abs(velocityX) < 0.02 && Math.abs(velocityY) < 0.02) {
@@ -278,53 +217,48 @@ const animate = function () {
             //     velocityZ *= -bounciness;
             //     ballMesh.position.z = 1;
             // }
-            // Figure out the rotation based on the velocity and radius of the ballMesh...
-            ballVelocity.set(velocityX, velocityY, velocityZ);
-            ballRotationAxis.set(0, 1, 0).cross(ballVelocity).normalize(); //!!!!!!
-            var velocityMag = ballVelocity.length();
-            var rotationAmount =
-                (velocityMag * (Math.PI * 2)) / ballCircumference;
-            ballMesh.rotateOnWorldAxis(ballRotationAxis, rotationAmount);
 
-            //reducing speed by friction
-            // angleRad *= friction;
-            // velocityX *= friction;
-            // velocityY *= friction;
-            // velocityZ *= friction;
-
-
-            
-            // let xDirection = velocityX > 0 ? 1 : -1;
-            // let zDirection = velocityZ > 0 ? 1 : -1;
-
-            if (velocityX > 0) {
-                velocityX -= friction;
-            }
-            else {
-                velocityX += friction;
-            }
-            if (velocityZ > 0) {   
-                velocityZ -= friction;
-            }
-            else {
-                velocityZ += friction;
-            }
-            
         }
+        //after seperation of mobile and desktop controls
+
+        // add velocity to ball
+        ballMesh.position.x += velocityX;
+        ballMesh.position.z += velocityZ;
+        ballMesh.position.y += velocityY;
+
+        // Figure out the rotation based on the velocity and radius of the ballMesh...
+        ballVelocity.set(velocityX, velocityY, velocityZ);
+        ballRotationAxis.set(0, 1, 0).cross(ballVelocity).normalize(); //!!!!!!
+        var velocityMag = ballVelocity.length();
+        var rotationAmount =
+            (velocityMag * (Math.PI * 2)) / ballCircumference;
+        ballMesh.rotateOnWorldAxis(ballRotationAxis, rotationAmount);
+        
+        // apply friction
+        if (velocityX > 0) {
+            velocityX -= friction;
+        } else {
+            velocityX += friction;
+        }
+        if (velocityZ > 0) {
+            velocityZ -= friction;
+        } else {
+            velocityZ += friction;
+        }
+
+
     } else {
+        //game behavior when not running
+
         //default rotation before method selection
-        // cube.rotation.x += 0.005;
-        // cube.rotation.y += 0.005;
+        ballMesh.rotation.x += 0.005;
+        ballMesh.rotation.y += 0.005;
+
+        //rotate camera around postition of the ball
+        // camera.position.x = ballMesh.position.x + 10 * Math.sin( Date.now() / 1000 );
+        // camera.position.z = ballMesh.position.z + 10 * Math.cos( Date.now() / 1000 );
+        // camera.lookAt( ballMesh.position );
     }
-
-    // camera.position.z += 0.05;
-    // camera.position.y += 0.01;
-
-    //rotate camera around postition of the ball
-    // camera.position.x = ballMesh.position.x + 10 * Math.sin( Date.now() / 1000 );
-    // camera.position.z = ballMesh.position.z + 10 * Math.cos( Date.now() / 1000 );
-    // camera.lookAt( ballMesh.position );
-
     renderer.render(scene, camera);
 };
 
@@ -352,8 +286,8 @@ function updateFieldIfNotNull(fieldName, value, precision = 10) {
 
 // Handle device motion change
 function handleMotion(event) {
-    accelX = event.accelerationIncludingGravity.x;
-    accelY = event.accelerationIncludingGravity.y;
+    gyroscopeX = event.accelerationIncludingGravity.x;
+    gyroscopeY = event.accelerationIncludingGravity.y;
 
     console.log("motion event handled");
 
@@ -474,7 +408,6 @@ function handleKeyDown(event) {
             break;
     }
 }
-
 
 //function to add obstacles to the three.js scene
 function addObstacle() {
