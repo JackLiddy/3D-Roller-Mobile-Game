@@ -86,7 +86,7 @@ h3{
 
 /* css element for a visually attractive score card at the top of the canvas */
 
-.scorecard {
+/* .scorecard {
     position: absolute;
     top: 0;
     left: 0;
@@ -98,7 +98,20 @@ h3{
     align-items: center;
     flex-direction: column;
     z-index: 100;
+} */
+
+.scorecard {
+    position: absolute;
+    top: 5%;
+    left: 25%;
+    right: 25%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
 }
+
 
 .title {
     font-size: 36px;

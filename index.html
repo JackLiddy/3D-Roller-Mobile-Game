@@ -12,7 +12,7 @@
     <body>
         <canvas class="webgl"></canvas>
 
-        <div class="title-div">
+        <div class="title-div" id="start-menu">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12 text-center">
@@ -25,27 +25,26 @@
                             </p>
                         <button
                             class="btn btn-primary"
-                            id="btn-start"
+                            id="using_mobile"
                         >
                             Mobile Mode (Recommended)
                         </button>
                         <br>
                         <button
                             class="btn btn-primary"
-                            id="btn-start"
+                            id="using_keyboard"
                         >
                             Keyboard Controls
                         </button>
-                        <!-- <button
-                            class="button"
-                            id="btn-start"
-                        >
-                            Start Game
-                        </button> -->
                     </div>
                 </div>
             </div>
         </div>
+
+        <div style="display:none;" "class="scorecard" id="scorecard">
+            <p2>Score: <span id="score">0</span></p2>
+        </div>
+
 
 
         <!-- <main id="popover2" role="main" class="container">

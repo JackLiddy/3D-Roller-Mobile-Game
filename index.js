@@ -264,11 +264,11 @@ const animate = function () {
 
 animate();
 
-function incrementEventCount() {
-    let counterElement = document.getElementById("num-observed-events");
-    let eventCount = parseInt(counterElement.innerHTML);
-    counterElement.innerHTML = eventCount + 1;
-}
+// function incrementEventCount() {
+//     let counterElement = document.getElementById("num-observed-events");
+//     let eventCount = parseInt(counterElement.innerHTML);
+//     counterElement.innerHTML = eventCount + 1;
+// }
 
 function updateFieldIfNotNull(fieldName, value, precision = 10) {
     if (value != null)
@@ -289,28 +289,28 @@ function handleMotion(event) {
     gyroscopeX = event.accelerationIncludingGravity.x;
     gyroscopeY = event.accelerationIncludingGravity.y;
 
-    console.log("motion event handled");
+    // console.log("motion event handled");
 
-    updateFieldIfNotNull(
-        "Accelerometer_gx",
-        event.accelerationIncludingGravity.x
-    );
-    updateFieldIfNotNull(
-        "Accelerometer_gy",
-        event.accelerationIncludingGravity.y
-    );
-    updateFieldIfNotNull(
-        "Accelerometer_gz",
-        event.accelerationIncludingGravity.z
-    );
+    // updateFieldIfNotNull(
+    //     "Accelerometer_gx",
+    //     event.accelerationIncludingGravity.x
+    // );
+    // updateFieldIfNotNull(
+    //     "Accelerometer_gy",
+    //     event.accelerationIncludingGravity.y
+    // );
+    // updateFieldIfNotNull(
+    //     "Accelerometer_gz",
+    //     event.accelerationIncludingGravity.z
+    // );
 
-    incrementEventCount();
+    // incrementEventCount();
 }
 
 let usingKeyboardButton = document.getElementById("using_keyboard");
 usingKeyboardButton.onclick = function (e) {
     e.preventDefault();
-    console.log("KEYBOARD BUTTON CLICKED");
+    // console.log("KEYBOARD BUTTON CLICKED");
     window.addEventListener("keypress", handleKeyDown);
     isMobile = false;
 
@@ -325,12 +325,14 @@ usingKeyboardButton.onclick = function (e) {
     } else {
         window.addEventListener("devicemotion", handleMotion);
         // window.addEventListener("deviceorientation", handleOrientation);
-        document.getElementById("using_mobile").innerHTML = "Stop Playing";
+        // document.getElementById("using_mobile").innerHTML = "Stop Playing";
         usingKeyboardButton.classList.remove("btn-success");
         usingKeyboardButton.classList.add("btn-danger");
 
         //hide popover
-        document.getElementById("popover").style.display = "none";
+        document.getElementById("start-menu").style.display = "none";
+        //unhide scorecard
+        document.getElementById("scorecard").style.display = "inline";
         is_running = true;
     }
 };
@@ -361,11 +363,13 @@ usingMobileButton.onclick = function (e) {
     } else {
         window.addEventListener("devicemotion", handleMotion);
         // window.addEventListener("deviceorientation", handleOrientation);
-        document.getElementById("using_mobile").innerHTML = "Stop Playing";
+        // document.getElementById("using_mobile").innerHTML = "Stop Playing";
         usingMobileButton.classList.remove("btn-success");
         usingMobileButton.classList.add("btn-danger");
         //hide popover
-        document.getElementById("popover").style.display = "none";
+        document.getElementById("start-menu").style.display = "none";
+        //unhide scorecard
+        document.getElementById("scorecard").style.display = "inline";
         is_running = true;
     }
 };
